@@ -1,0 +1,18 @@
+[Eagle]
+Version="09 05 02"
+Platform="Linux"
+Globals="Globals"
+Desktop="Desktop"
+
+[Globals]
+AutoSaveProject=1
+UsedLibrary="Micromirror_Ampli_PCB.lbr"
+UsedLibrary="drilegend.lbr"
+
+[Win_1]
+Type="Control Panel"
+Number=0
+
+[Desktop]
+Screen="1280 720"
+Window="Win_1"

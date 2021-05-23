@@ -1,0 +1,10 @@
+latex
+Debug
+Release
+
+*.bin
+*.so
+*.o
+*.launch
+logs
+doxygen

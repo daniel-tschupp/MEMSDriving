@@ -1,0 +1,141 @@
+body {
+  	margin: 0%;
+	--main-bg-color: #BBB;
+	--main-txt-color: #111;
+	--title-txt-color: #fff;
+	--title-bg-color: #444;
+}
+
+h1 {
+	font-size: 170%;
+}
+h2 {
+	font-size: 120%;
+}
+h3 {
+	font-size: 100%;
+}
+table{
+	empty-cells: show;
+	font-size: 100%;
+}
+th {
+	text-align: left;
+}
+
+.wrapper {
+    	display: grid;
+    	grid-gap: 0.1vh;
+        grid-template-columns: 8.3% 8.3% 8.3% 8.3% 8.3% 8.3% 8.3% 8.3% 8.3% 8.3% 8.3% 8.3%;
+        background-color: #CCC;
+        color: #444;
+    	}
+
+    	.box {
+        	background-color: var(--main-bg-color);
+        	color: var(--main-txt-color);
+        	border-radius: 5px;
+        	padding: 10px;
+        	font-size: 80%;
+
+    	}
+
+    	.titlebox 	{
+		background-color: var(--title-bg-color);
+		color: var(--title-txt-color);
+        	grid-column: 1 / 11;
+        	grid-row: 1;
+		font-size: 150%;
+		padding: 20px;
+    	}
+    	.connectbox {
+		background-color: var(--title-bg-color);
+		color: var(--title-txt-color);
+        	grid-column: 11 / 13 ;
+        	grid-row: 1;
+		padding: 20px;
+    	}
+	.configboxSelector{
+		padding: 0px;
+		grid-column: 1 / 7 ;
+		grid-row: 2;
+	}
+    	.configbox {
+        	grid-column: 1 / 7 ;
+        	grid-row: 3;
+    	}
+    	.fastbox {
+        	grid-column: 7 / 10;
+        	grid-row: 3;
+    	}
+	.slowbox {
+        	grid-column: 10 / 13;
+        	grid-row: 3;
+	}
+	.sendbox{
+		grid-column: 1 / 13;
+		grid-row: 4
+	}
+	.receivebox{
+		grid-column: 1 / 13;
+		grid-row: 5
+	}
+
+
+#bStartStop{
+	float: left;
+	height: 100%;
+	width: 50%;
+}
+.buttonClicked{
+	float: left;
+	background-color: #bbb;
+	width: 20%;
+}
+.buttonUnclicked{
+	float: left;
+	background-color: #eee;
+	width: 20%;
+}
+.led-box {
+  	width: 25%;
+  	margin: 5px 5px;
+	float: right;
+}
+
+.led-green {
+  	margin: 0 auto;
+  	width: 100%;
+	padding-top: 100%;
+  	background-color: #ABFF00;
+  	border-radius: 50%;
+  	box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+  	float: left;
+}
+
+.led-red {
+  margin: 0 auto;
+  width: 100%;
+  padding-top:100%;
+  background-color: #F00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+  -webkit-animation: blinkRed 0.5s infinite;
+  -moz-animation: blinkRed 0.5s infinite;
+  -ms-animation: blinkRed 0.5s infinite;
+  -o-animation: blinkRed 0.5s infinite;
+  animation: blinkRed 0.5s infinite;
+  float: left;
+}
+
+.cmdBox {
+	width: 100%;
+	resize: none;
+	overflow: auto;
+}
+
+input[type="number"] {
+	width:100%
+}
+
+	

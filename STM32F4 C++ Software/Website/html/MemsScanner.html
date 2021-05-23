@@ -1,0 +1,289 @@
+<!DOCTYPE html5>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="../css/MemsScanner.css" />
+	<title>Mems Scanner Utils</title>
+		
+	<script type="text/javascript" src="../js/ControllingScripts.js"></script>
+	<script type="text/javascript" src="../js/WebSocket.js"></script>
+</head>
+
+<body>
+<div class="wrapper">
+  	
+	<div class="box titlebox"><h1>HuCe-optoLab MEMS Scanner</h1></div>
+  	
+	<div class="box connectbox">
+		<input id="bStartStop" type="button" value="Start" onclick="StartStopAction()"/>
+  			<div class="led-box">
+    				<div id="ledIndicator" class="led-red"></div>		
+  			</div>
+	</div>
+  	<div class="box configboxSelector">
+		<input id="bMCUConfig" class="buttonClicked" type="button" value="MCU Config" onclick="McuConfigClick()"/>
+		<input id="bFilterConfig" class="buttonUnclicked" type="button" value="Filter" onclick="FilterClick()"/>
+		<input id="bScanPreview" class="buttonUnclicked" type="button" value="Scan Preview" onclick="ScanPreviewClick()"/>
+	</div>	
+	<div class="box configbox" id="iMCUConfigBox" style="display: block;">
+		<h2>MCU Config</h2>
+		<table style="width:100%">
+			<tr>
+			<td class="tableTitle">OCT Type:</td>
+			</tr>
+			<tr>
+				<th>Spectrometer</th>
+				<td><input id="iSpectrometer" type="radio" name="OctType" checked="checked"/></td>
+			</tr>
+			<tr>
+				<td>SweptSource</td>
+				<td><input id="iSweptSource" type="radio" name="OctType"/></td>
+			</tr>
+			<tr>
+				<th>A-Scan Frequency:</th>
+				<td><input id="iAScanFrec" type="number" name="ascanfreq" min="0" max="50000" value="10000"></td>
+			</tr>
+			<tr>
+				<th>Scanning Mode:</th>
+			</tr>
+			<tr>
+				<td>Single Scan</td>
+				<td><input id="iSingleScan" type="radio" name="ScanMode" checked="checked"/></td>
+			</tr>
+			<tr>
+				<td>Continuous Scan</td>
+				<td><input id="iContScan" type="radio" name="ScanMode" /></td>
+			<tr>	
+		</table>
+		<input type="button" style="float: right;" value="send" onclick="SendMCUConfig()"/>
+	</div>
+	<div class="box configbox" id="iFilterConfigBox" style="display: none;">
+		<table style=width=100%>
+			<tr>
+				<th>Sampling Frequency: </th>
+				<td><input id="FiltSamplingFreq" type="numeric" min="0" max="50000" value="10000"/>
+				<th>Hz</th>
+			</tr>
+		</table>
+		<h3>IIR Filter Coefficients X-Axis:</h3>
+		<table style=width=100%>
+			<tr>	<th>X-Axis Filter gain:</th>
+				<td><input id="FiltX_gain" type="numeric" style="width=100%;" value="5.8893"/>
+			</tr>
+			<tr>
+				<th>Delays</th><th>z^-4</th><th>z^-3</th><th>z^-2</th><th>z^-1</th><th>z^0</th>
+			</tr>
+			<tr>
+				<th>b</th>
+				<td><input id="FiltX_b4" type="numeric" style="width: 100%;" value="-0.65877"/> 
+-                               <td><input id="FiltX_b3" type="numeric" style="width: 100%;" value="0.64509"/>
+-                               <td><input id="FiltX_b2" type="numeric" style="width: 100%;" value ="2.7908"/>
+-                               <td><input id="FiltX_b1" type="numeric" style="width: 100%;" value="-4.9486"/>
+-                               <td><input id="FiltX_b0" type="numeric" style="width: 100%;" value="2.2292"/>
+			</tr>
+				<tr>
+				<th>a</th>
+				<td><input id="FiltX_a4" type="numeric" style="width: 100%;" value="-0.066085"/>        
+-                               <td><input id="FiltX_a3" type="numeric" style="width: 100%;" value="0.40542"/>
+-                               <td><input id="FiltX_a2" type="numeric" style="width: 100%;" value="-0.60382"/>
+-                               <td><input id="FiltX_a1" type="numeric" style="width: 100%;" value="-0.39482"/>
+				<td><input id="FiltX_a0" type="numeric" style="width: 100%;" value="1.0"/>
+			</tr>
+		</table>
+		<input id="bSaveXFilt" type="file" value="Save" style="display:none;"/>
+		<input id="bLoadXFilt" type="button" value="Load" style="display:none;" onclick="LoadXFiltClick()"/>
+		<input id="bSendXFilt" type="button" value="Send" style="float: right;" onclick="SendFiltX()"/>
+		<h3>IIR Filter Coefficients Y-Axis:</h3>
+		<table style=width=100%>
+			<tr>	<th>Y-Axis Filter gain:</th>
+				<td><input id="FiltY_gain" type="numeric" style="width=100%;" value="1.0"/>
+			</tr>
+			<tr>
+				<th>Delays</th><th>z^-4</th><th>z^-3</th><th>z^-2</th><th>z^-1</th><th>z^0</th>
+			</tr>
+			<tr>
+				<th>b</th>
+				<td><input id="FiltY_b4" type="numeric" style="width: 100%;" value="0"/>        
+-                               <td><input id="FiltY_b3" type="numeric" style="width: 100%;" value="0"/>
+-                               <td><input id="FiltY_b2" type="numeric" style="width: 100%;" value ="0"/>
+-                               <td><input id="FiltY_b1" type="numeric" style="width: 100%;" value="0"/>
+-                               <td><input id="FiltY_b0" type="numeric" style="width: 100%;" value="1"/>
+			</tr>
+				<tr>
+				<th>a</th>
+				<td><input id="FiltY_a4" type="numeric" style="width: 100%;" value="0"/>        
+-                               <td><input id="FiltY_a3" type="numeric" style="width: 100%;" value="0"/>
+-                               <td><input id="FiltY_a2" type="numeric" style="width: 100%;" value="0"/>
+-                               <td><input id="FiltY_a1" type="numeric" style="width: 100%;" value="0"/>
+-                               <td><input id="FiltY_a0" type="numeric" style="width: 100%;" value="1"/>
+			</tr>
+		</table>
+		<input id="bSaveYFilt" type="button" value="Save" style="display:none;" onclick="SaveYFiltClick()"/>
+		<input id="bLoadYFilt" type="button" value="Load" style="display:none;" onclick="LoadYFiltClick()"/>
+		<input id="bSendYFilt" type="button" value="Send" style="float: right;" onclick="SendFiltY()"/>
+
+
+
+	</div>
+	<div class="box configbox" id="iScanPreviewBox" style="display: none;">
+		<h3> Scan Pattern Simulation:</h3>
+		<table>
+			<tr>
+				<th>Simulation Options:</th>
+			</tr>
+			<tr>
+				<td>Simulation Endtime [s]:</td>
+				<td><input id="iSimEndTime" type="numeric" min="0" value="0.5" oninput="drawScanPattern()"/>
+			</tr>
+			<tr>
+				<td>DAC Sampling Frequency [Hz]:</td>
+				<td><input id="iSimDACFreq" type="numeric" min="0" value="10000" oninput="drawScanPattern()"/>
+		</table>
+		<div style="width:100%;height:70%;" id="svgSize">
+			<svg id="iScanPatternSVG" height="100%" width="100%">
+				<polyline id="pLine" 
+				style="width:100%;height:100%;fill:none;stroke:black;stroke-width:3"/>
+			</svg>
+		</div>
+	</div>
+  	<div class="box fastbox">
+		<h2>Config Fast Axis Mirror</h2>
+		<table style="width:100%">
+			<tr>
+			<th>Signal Form:</th>
+			</tr>
+			<tr>
+				<td>Sawtooth</td>
+				<td><input id="iFastSawtooth" type="radio" name="fastSignalForm" checked="checked" onclick="JSFastSawToothSelected()"/></td>
+			</tr>
+			<tr>
+				<td>Sine</td>
+				<td><input id="iFastSine" type="radio" name="fastSignalForm" onclick="JSFastSineSelected()"/></td>
+			</tr>
+			<tr>
+				<td>Constant</td>
+				<td><input id="iFastConstant" type="radio" name="fastSignalForm" onclick="JSFastConstSelected()"/></td>
+			</tr>
+			<tr id="fastFrec" style="display:table-row;">
+				<th>Frequency</th>
+				<td><input id="iFastFrec" type="number" min="0" max="500" value="100" step="0.001" oninput="drawScanPattern()"></td>
+			</tr>
+			<tr id="fastDuration" style="display: none;">
+                                <th>Duration</th>
+                                <td><input id="iFastDuration" type="number" min="0" max="200000000" value="100" step="0.0000000001" oninput="drawScanPattern()"></td>
+                        </tr>
+			<tr id="fastAmp" style="display: table-row;">
+				<th>Amplitude</th>
+				<td><input id="iFastAmp" type="number" min="-1.5" max="1.5" value="0.5" step="0.1" oninput="drawScanPattern()"></td>
+			</tr>
+			<tr id="fastDC" style="display: none;">
+                                <th>DC Value</th>
+                                <td><input id="iFastDC" type="number" min="-1.5" max="1.5" value="0.0" step="0.1"oninput="drawScanPattern()"></td>
+                        </tr>
+			<tr>
+				<th>Phase</th>
+				<td><input id="iFastPhase" type="number" min="0" max="360" value="0" step="1" oninput="drawScanPattern()"></td>
+			</tr>
+			<tr>
+				<th>Offset</th>
+				<td><input id="iFastOffset" type="number" min="-1.5" max="1.5" value="0" step="0.1" oninput="drawScanPattern()"></td>
+			</tr>
+			<tr id="fastWidth" style="display: table-row;">
+				<th>Width</th>
+				<td><input id="iFastWidth" type="number" min="0" max="1" value="0.5" step="0.01" oninput="drawScanPattern()"></td>
+			</tr>
+			<tr>
+				<th>Filter</th>
+			</tr>
+			<tr>
+				<td>No Filter</td>
+				<td><input id="iFastNoFilt" type="radio" name="fastSelectedFilter" checked="checked"/></td>
+			</tr>
+			<tr>
+				<td>Bessel Filter</td>
+				<td><input id="iFastBessel" type="radio" name="fastSelectedFilter" /></td>
+			<tr>	
+			<tr>
+				<td>IIR Filter</td>
+				<td><input id="iFastIIR" type="radio" name="fastSelectedFilter" /></td>
+			</tr>
+		</table>
+		<input type="button" style="float: right;" value="send" onclick="SendFastConfig()"/>
+	</div>
+	<div class="box slowbox">
+		<h2>Config Slow Axis Mirror</h2>
+                <table style="width:100%">
+                        <tr>
+                        <th>Signal Form:</th>
+                        </tr>
+                        <tr>
+                                <td>Sawtooth</td>
+                                <td><input id="iSlowSawtooth" type="radio" name="slowSignalForm" onclick="JSSlowSawToothSelected()"/></td>
+                        </tr>
+                        <tr>
+                                <td>Sine</td>
+                                <td><input id="iSlowSine" type="radio" name="slowSignalForm" onclick="JSSlowSineSelected()"/></td>
+                        </tr>
+                        <tr>
+                                <td>Constant</td>
+                                <td><input id="iSlowConstant" type="radio" name="slowSignalForm" checked="checked" onclick="JSSlowConstSelected()"/></td>
+                        </tr>
+                        <tr id="slowFrec" style="display: none;">
+                                <th>Frequency</th>
+                                <td><input id="iSlowFrec" type="number" min="0" max="500" value="100" step="0.001" oninput="drawScanPattern()"></td>
+                        </tr>
+                        <tr id="slowDuration" style="display: table-row;">
+                                <th>Duration</th>
+                                <td><input id="iSlowDuration" type="number" min="0" max="200000000" value="100" step="0.0000000001" oninput="drawScanPattern()"></td>
+                        </tr>
+                        <tr id="slowAmp" style="display: none;">
+                                <th>Amplitude</th>
+                                <td><input id="iSlowAmp" type="number" min="-1.5" max="1.5" value="0.5" step="0.1" oninput="drawScanPattern()"></td>
+                        </tr>
+                        <tr id="slowDC" style="display: table-row;">
+                                <th>DC Value</th>
+                                <td><input id="iSlowDC" type="number" min="-1.5" max="1.5" value="0.0" step="0.1" oninput="drawScanPattern()"></td>
+                        </tr>
+                        <tr>
+                                <th>Phase</th>
+                                <td><input id="iSlowPhase" type="number" min="0" max="360" value="0" step="1" oninput="drawScanPattern()"></td>
+                        </tr>
+                        <tr>
+                                <th>Offset</th>
+                                <td><input id="iSlowOffset" type="number" min="-1.5" max="1.5" value="0" step="0.1" oninput="drawScanPattern()"></td>
+                        </tr>
+                        <tr id="slowWidth" style="display: none;">
+                                <th>Width</th>
+                                <td><input id="iSlowWidth" type="number" min="0" max="1" value="0.5" step="0.01" oninput="drawScanPattern()"></td>
+                        </tr>
+			<tr>
+                                <th>Filter</th>
+                        </tr>
+                        <tr>
+                                <td>No Filter</td>
+                                <td><input id="iSlowNoFilt" type="radio" name="slowSelectedFilter" checked="checked"/></td>
+                        </tr>
+                        <tr>
+                                <td>Bessel Filter</td>
+                                <td><input id="iSlowBessel" type="radio" name="slowSelectedFilter" /></td>
+                        <tr>
+                        <tr>
+                                <td>IIR Filter</td>
+                                <td><input id="iSlowIIR" type="radio" name="slowSelectedFilter" /></td>
+                        </tr>
+                </table>
+		<input type="button" style="float: right;" value="send" onclick="SendSlowConfig()"/>
+	</div>
+	<div class="box sendbox">
+		<h3> Last Sent command: </h3>
+                <textarea id="txtSend" class="cmdBox" name="CmdSend" rows="1" readonly="true"></textarea>
+	</div>
+	<div class="box receivebox">
+		 <h3> Last Received answer: </h3>
+                <textarea id="txtRec" class="cmdBox" name="Response" rows="1" readonly="true"></textarea>
+	</div>
+
+</div>
+</body>
+
+
